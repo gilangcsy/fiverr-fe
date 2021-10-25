@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Seller\DashboardController;
+use App\Http\Controllers\Seller\ServicesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('seller/index');
 });
+
+Route::prefix('seller/')
+    ->namespace('Seller')
+    ->group(function () {
+        Route::get('', [DashboardController::class, 'index'])->name('index'); 
+        Route::prefix('services/')
+            ->namespace('Services')
+            ->group(function () {
+            Route::get('', [ServicesController::class, 'index'])->name('services.index');
+        });
+    });
