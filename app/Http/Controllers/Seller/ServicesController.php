@@ -13,14 +13,18 @@ class ServicesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $devHost = env("HOST_API_DEV", "");
         $devHostStorage = env("HOST_STORAGE_DEV", "");
-        $response = Http::get($devHost . 'services');
+        $response = Http::withHeaders([
+            'x-access-token' => $request->session()->get('accessToken')
+        ])->get($devHost . 'services');
         $services = json_decode($response->body());
-        
-        return view('seller/services/index', compact(['services', 'devHostStorage']));
+        if ($response->successful()){
+            return view('dashboard/seller/services/index', compact(['services', 'devHostStorage']));
+        }
+        return redirect()->route('auth.index')->with('status', $services->message);
     }
 
     /**
@@ -28,9 +32,19 @@ class ServicesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $devHost = env("HOST_API_DEV", "");
+        $response = Http::withHeaders([
+            'x-access-token' => $request->session()->get('accessToken')
+        ])->get($devHost . 'services');
+        $services = json_decode($response->body());
+        $service = (object) ['id' => 'Here we go'];
+
+        if ($response->successful()){
+            return view('dashboard/seller/services/create', compact('service'));
+        }
+        return redirect()->route('auth.index')->with('status', $services->message);
     }
 
     /**

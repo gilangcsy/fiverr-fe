@@ -12,7 +12,7 @@
             <li class={{ (Route::currentRouteName() == 'index') ? 'active' : ''}}><a class="nav-link" href="/seller"><i class="fas fa-fire"></i> <span>Dashboard</span></a></li>
 
             <li class="menu-header">Menu</li>
-            <li class={{ (Route::currentRouteName() == 'services.index') ? 'active' : ''}}>
+            <li class={{ (Route::currentRouteName() == 'services.index' || Route::currentRouteName() == 'services.create') ? 'active' : ''}}>
                 <a class="nav-link" href="/seller/services">
                     <i class="fab fa-servicestack"></i>
                     <span>My Service</span>

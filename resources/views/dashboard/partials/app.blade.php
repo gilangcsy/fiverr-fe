@@ -38,8 +38,8 @@
         <div class="main-wrapper main-wrapper-1">
             <div class="navbar-bg"></div>
 
-            @include('seller.partials.navbar')
-            @include('seller.partials.sidebar')
+            @include('dashboard.partials.navbar')
+            @include('dashboard.partials.sidebar')
 
             <!-- Main Content -->
             <div class="main-content">

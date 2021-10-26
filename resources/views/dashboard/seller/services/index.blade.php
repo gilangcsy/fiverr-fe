@@ -1,4 +1,4 @@
-@extends('seller.partials.app')
+@extends('dashboard.partials.app')
 
 @section('css')
 <!-- CSS Libraries -->
@@ -6,6 +6,8 @@
 <link rel="stylesheet"
     href="{{asset('assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{asset('assets/modules/datatables/Select-1.2.4/css/select.bootstrap4.min.css')}}">
+
+<link rel="stylesheet" href="{{asset('assets/modules/izitoast/css/iziToast.min.css')}}">
 @endsection
 
 @section('content')
@@ -20,7 +22,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <a href="/seller/services/" class="btn btn-primary">
+                        <a href="{{ route('services.create') }}" class="btn btn-primary">
                             Add
                         </a>
                     </div>
@@ -72,7 +74,9 @@
 <script src="{{asset('assets/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js')}}"></script>
 <script src="{{asset('assets/modules/datatables/Select-1.2.4/js/dataTables.select.min.js')}}"></script>
 <script src="{{asset('assets/modules/jquery-ui/jquery-ui.min.js')}}"></script>
+<script src="{{asset('assets/modules/izitoast/js/iziToast.min.js')}}"></script>
 
 <!-- Page Specific JS File -->
 <script src="{{asset('assets/js/page/modules-datatables.js')}}"></script>
+<script src="{{asset('assets/js/page/modules-toastr.js')}}"></script>
 @endsection
