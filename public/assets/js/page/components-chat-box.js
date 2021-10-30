@@ -96,6 +96,27 @@ var chats = [
     position: 'right'
   },
 ];
+
+
+ const socket = io("http://localhost:3000");
+
+ function createMessage(msg) {
+     const li = document.createElement('li');
+     li.textContent = `${msg.text},${msg.UserId}, ${msg.User.username}`
+     messages.append(li);
+ }
+
+ function createMessages(msgs) {
+     msgs.forEach(createMessage);
+ }
+
+ fetch("http://localhost:3000/api/message")
+     .then(res => res.json())
+     .then(createMessages);
+
+
+
+
 for(var i = 0; i < chats.length; i++) {
   var type = 'text';
   if(chats[i].typing != undefined) type = 'typing';

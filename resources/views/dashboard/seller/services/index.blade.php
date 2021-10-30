@@ -52,7 +52,7 @@
                                         </td>
                                         <td>
                                             <img alt="image" src="{{ $devHostStorage }}service/{{$item->thumbnail}}"
-                                                width="300" data-toggle="tooltip" title="Wildan Ahdian">
+                                                width="150" data-toggle="tooltip" title="Wildan Ahdian">
                                         </td>
                                         <td><a href="#" class="btn btn-secondary">Detail</a></td>
                                     </tr>

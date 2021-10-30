@@ -17,14 +17,20 @@ class ServicesController extends Controller
     {
         $devHost = env("HOST_API_DEV", "");
         $devHostStorage = env("HOST_STORAGE_DEV", "");
-        $response = Http::withHeaders([
-            'x-access-token' => $request->session()->get('accessToken')
-        ])->get($devHost . 'services');
+		$UserId = $request->session()->get('UserId');
+
+		$response = Http::get($devHost . 'services', [
+			'UserId' => $UserId
+		]);
+		
         $services = json_decode($response->body());
+		$services = $services->data;
+		
         if ($response->successful()){
             return view('dashboard/seller/services/index', compact(['services', 'devHostStorage']));
         }
         return redirect()->route('auth.index')->with('status', $services->message);
+
     }
 
     /**
@@ -39,7 +45,14 @@ class ServicesController extends Controller
             'x-access-token' => $request->session()->get('accessToken')
         ])->get($devHost . 'services');
         $services = json_decode($response->body());
-        $service = (object) ['id' => 'Here we go'];
+        $service = (object) [
+			'id' => '',
+			'title' => '',
+			'description' => '',
+			'thumbnail' => '',
+			'fileFormat' => '',
+			'CategoryId' => '',
+		];
 
         if ($response->successful()){
             return view('dashboard/seller/services/create', compact('service'));

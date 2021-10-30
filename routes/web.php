@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('seller/index');
-});
+    return view('dashboard/seller/index');
+})->middleware('seller');
 
 Route::prefix('auth/')
     ->namespace('Auth')

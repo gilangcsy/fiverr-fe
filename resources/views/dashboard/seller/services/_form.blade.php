@@ -1,58 +1,45 @@
-<input type="hidden" name="id" value="{{ old('id') ?? $service->id }}" class="form-control w-25 @error('position') is-invalid @enderror">
+<input type="hidden" name="id" value="{{ old('id') ?? $service->id }}"
+    class="form-control w-25 @error('position') is-invalid @enderror">
+
 <div class="form-group">
     <label>Title</label>
-    <input type="text" name="title" class="form-control">
+    <input type="text" name="title" value="{{ old('title') ?? $service->title }}" class="form-control" required autofocus autocomplete="off">
+	<div class="invalid-feedback">Please fill in your title</div>
 </div>
 
 <div class="form-group">
     <label>Description</label>
-    <textarea class="form-control" required=""></textarea>
+    <textarea class="form-control" required="">{{ old('description') ?? $service->description }}</textarea>
+	<div class="invalid-feedback">Please fill in your description</div>
 </div>
 
+<div class="form-group">
+    <label>Thumbnail</label>
+    <div class="custom-file">
+        <input type="file" class="custom-file-input" id="customFile" accept="image/png, image/jpeg" required>
+        <label class="custom-file-label" for="customFile">Choose file</label>
+		<div class="invalid-feedback">Please fill in your thumbnail</div>
+    </div>
+</div>
 
 <div class="form-group">
-    <label>Password Strength</label>
-    <div class="input-group">
-        <div class="input-group-prepend">
-            <div class="input-group-text">
-                <i class="fas fa-lock"></i>
-            </div>
-        </div>
-        <input type="password" class="form-control pwstrength" data-indicator="pwindicator">
-    </div>
-    <div id="pwindicator" class="pwindicator">
-        <div class="bar"></div>
-        <div class="label"></div>
-    </div>
+    <label>Category</label>
+    <select class="form-control selectric">
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+        <option>Option 4</option>
+        <option>Option 5</option>
+        <option>Option 6</option>
+    </select>
 </div>
+
 <div class="form-group">
-    <label>Currency</label>
-    <div class="input-group">
-        <div class="input-group-prepend">
-            <div class="input-group-text">
-                $
-            </div>
-        </div>
-        <input type="text" class="form-control currency">
-    </div>
+    <label>File Format</label>
+    <input type="text" placeholder="PSD, AI, Dll" name="fileFormat" value="{{ old('fileFormat') ?? $service->fileFormat }}" class="form-control" required autofocus autocomplete="off">
+	<div class="invalid-feedback">Please fill in your file format</div>
 </div>
-<div class="form-group">
-    <label>Purchase Code</label>
-    <input type="text" class="form-control purchase-code" placeholder="ASDF-GHIJ-KLMN-OPQR">
-</div>
-<div class="form-group">
-    <label>Invoice</label>
-    <input type="text" class="form-control invoice-input">
-</div>
-<div class="form-group">
-    <label>Date</label>
-    <input type="text" class="form-control datemask" placeholder="YYYY/MM/DD">
-</div>
-<div class="form-group">
-    <label>Credit Card</label>
-    <input type="text" class="form-control creditcard">
-</div>
-<div class="form-group">
-    <label>Tags</label>
-    <input type="text" class="form-control inputtags">
-</div>
+
+<button type="submit" class="btn btn-primary">
+	Save
+</button>

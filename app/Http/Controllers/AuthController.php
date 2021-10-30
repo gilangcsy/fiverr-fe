@@ -46,6 +46,7 @@ class AuthController extends Controller
         if ($response->successful()){
             session()->put('accessToken', $getData->credentials->accessToken);
             session()->put('roleCheck', $getData->credentials->role);
+            session()->put('UserId', $getData->credentials->UserId);
             session()->put('fullName', $getData->credentials->fullName);
             return redirect()->route('index')->with('status', 'Welcome, ' . $getData->credentials->fullName);
         }
