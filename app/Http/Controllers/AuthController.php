@@ -44,10 +44,10 @@ class AuthController extends Controller
         $getData = json_decode($response->body());
 
         if ($response->successful()){
-            session()->put('accessToken', $getData->credentials->accessToken);
-            session()->put('roleCheck', $getData->credentials->role);
-            session()->put('UserId', $getData->credentials->UserId);
-            session()->put('fullName', $getData->credentials->fullName);
+            $request->session()->put('accessToken', $getData->credentials->accessToken);
+            $request->session()->put('roleCheck', $getData->credentials->role);
+            $request->session()->put('UserId', $getData->credentials->UserId);
+            $request->session()->put('fullName', $getData->credentials->fullName);
             return redirect()->route('index')->with('status', 'Welcome, ' . $getData->credentials->fullName);
         }
         return redirect()->route('auth.index')->with('status', $getData->message);
@@ -95,18 +95,21 @@ class AuthController extends Controller
      */
     public function destroy(Request $request)
     {
+		
         $devHost = env("HOST_API_DEV", "");
         $response = Http::withHeaders([
             'x-access-token' => $request->session()->get('accessToken'),
-        ])->post($devHost . 'auth/logout', [
-            'name' => 'Taylor',
-        ]);
+        ])->post($devHost . 'auth/logout');
 
         if ($response->successful()){
-            session()->forget('accessToken');
-            session()->forget('sellerCheck');
-            session()->forget('loginSuccess');
+            $request->session()->forget('accessToken');
+            $request->session()->forget('roleCheck');
+            $request->session()->forget('fullName');
+            $request->session()->forget('UserId');
+            $request->session()->forget('loginSuccess');
             return redirect()->route('auth.index');
-        }
+        } else {
+        	return redirect()->route('auth.index');
+		}
     }
 }

@@ -4,18 +4,32 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client as Guzzle;
 
-class DashboardController extends Controller
+class ServiceFeatureController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id)
     {
-		$page = request()->get('page');
-        return view('dashboard/seller/index', compact('page'));
+		$devHost = env("HOST_API_DEV", "");
+
+		$response = Http::get($devHost . 'services/plans/features', [
+			'ServiceId' => $id
+		]);
+
+		$features = json_decode($response->body());
+		$features = $features->data;
+		$ServiceId = $id;
+
+		if ($response->successful()){
+			return view('dashboard/seller/features/index', compact(['features', 'ServiceId']));
+		}
+		return redirect()->route('auth.index')->with('status', $features->message);
     }
 
     /**
@@ -23,9 +37,16 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id)
     {
-        //
+        $service = (object) [
+			'id' => '',
+			'title' => '',
+			'ServiceId' => $id,
+		];
+		
+		return view('dashboard/seller/features/create', compact('service'));
+        
     }
 
     /**
@@ -36,7 +57,20 @@ class DashboardController extends Controller
      */
     public function store(Request $request)
     {
-        //
+		$devHost = env("HOST_API_DEV", "");
+        $response = Http::post($devHost . 'services/plans/features', [
+        	'title' => $request->title,
+        	'ServicePlanId' => $request->ServicePlanId,
+        	'ServiceId' => $request->ServiceId,
+        ]);
+
+		if ($response->successful()){
+			return redirect()->route('features.index', $request->ServiceId)->with('status', 'Features Added Successfully');
+		} else {
+			return back()->withInput();
+		}
+
+
     }
 
     /**

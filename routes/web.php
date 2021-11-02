@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Seller\DashboardController;
+use App\Http\Controllers\Seller\ServiceFeatureController;
 use App\Http\Controllers\Seller\ServicesController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,7 @@ Route::prefix('auth/')
         Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.logout');
     });
 
+
 Route::prefix('seller/')
     ->namespace('Seller')
     ->middleware('seller')
@@ -36,9 +38,23 @@ Route::prefix('seller/')
         Route::get('', [DashboardController::class, 'index'])->name('index'); 
         Route::prefix('services/')
             ->namespace('Services')
+            ->middleware('seller')
             ->group(function () {
-            Route::get('', [ServicesController::class, 'index'])->name('services.index');
-            Route::get('/create', [ServicesController::class, 'create'])->name('services.create');
-            Route::get('/session', [ServicesController::class, 'session'])->name('services.session');
+            	Route::get('', [ServicesController::class, 'index'])->name('services.index');
+            	Route::get('/create', [ServicesController::class, 'create'])->name('services.create');
+            	Route::get('/edit/{id}', [ServicesController::class, 'edit'])->name('services.edit');
+            	// Route::get('/user/{id}', [ServicesController::class, 'message'])->name('services.message');
+            	Route::post('/', [ServicesController::class, 'store'])->name('services.store');
+            	Route::delete('/{id}', [ServicesController::class, 'destroy'])->name('services.delete');
+            	Route::patch('/{id}', [ServicesController::class, 'update'])->name('services.update');
+
+				Route::prefix('features/')
+					->namespace('Features')
+					->middleware('seller')
+					->group(function () {
+						Route::get('/{id}', [ServiceFeatureController::class, 'index'])->name('features.index');
+						Route::get('/{id}/create', [ServiceFeatureController::class, 'create'])->name('features.create');
+						Route::post('/', [ServiceFeatureController::class, 'store'])->name('features.store');
+				});
         });
     });

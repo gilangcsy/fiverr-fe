@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client as Guzzle;
 
 class ServicesController extends Controller
 {
@@ -68,7 +69,52 @@ class ServicesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+		$guzzle = new Guzzle();
+		$devHost = env("HOST_API_DEV", "");
+		$token = $request->session()->get('accessToken');
+		$headers = ['x-access-token' => $token];
+
+		$thumbail = $request->file('thumbnail');
+
+        try {
+            $response = $guzzle->request('POST', $devHost . "services", [
+				'headers' => $headers,
+                'multipart' => [
+					[
+                        'name' => 'title',
+                        'contents' => $request->title
+                    ],
+					[
+                        'name' => 'description',
+                        'contents' => $request->description
+                    ],
+                    [
+                        'name' => 'thumbnail',
+                        'Content-Type' => $thumbail->getMimeType(),
+                        'contents' => fopen($thumbail->getPathname(), 'r')
+                    ],
+					[
+                        'name' => 'fileFormat',
+                        'contents' => $request->fileFormat
+                    ],
+					[
+                        'name' => 'CategoryId',
+                        'contents' => $request->CategoryId
+                    ],
+					[
+                        'name' => 'UserId',
+                        'contents' => $request->session()->get('UserId')
+                    ],
+                ]
+            ]);
+            if ($response->getStatusCode() == 200) {
+                return redirect()->route('services.index')->with('status', 'Service added auccessfully! :)');
+            } else {
+                return back()->withInput();
+            }
+        } catch (\GuzzleHttp\Exception\BadResponseException $e) {
+            return $e->getResponse()->getBody()->getContents();
+        }
     }
 
     /**
@@ -88,9 +134,31 @@ class ServicesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        //
+        $devHost = env("HOST_API_DEV", "");
+        $response = Http::withHeaders([
+            'x-access-token' => $request->session()->get('accessToken')
+        ])->get($devHost . 'services', [
+			'id' => $id
+		]);
+        $services = json_decode($response->body());
+
+		foreach($services->data as $item) {
+			$service = (object) [
+				'id' => $item->id,
+				'title' => $item->title,
+				'description' => $item->description,
+				'thumbnail' => $item->thumbnail,
+				'fileFormat' => $item->fileFormat,
+				'CategoryId' => $item->CategoryId,
+			];
+		}
+
+        if ($response->successful()){
+            return view('dashboard/seller/services/edit', compact('service'));
+        }
+        return redirect()->route('auth.index')->with('status', $service->message);
     }
 
     /**
@@ -102,7 +170,89 @@ class ServicesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $guzzle = new Guzzle();
+		$devHost = env("HOST_API_DEV", "");
+		$token = $request->session()->get('accessToken');
+		$headers = ['x-access-token' => $token];
+
+		if($request->file('thumbnail') != null) {
+			$thumbail = $request->file('thumbnail');
+			try {
+				$response = $guzzle->request('PATCH', $devHost . "services/" . $id, [
+					'headers' => $headers,
+					'multipart' => [
+						[
+							'name' => 'title',
+							'contents' => $request->title
+						],
+						[
+							'name' => 'description',
+							'contents' => $request->description
+						],
+						[
+							'name' => 'thumbnail',
+							'Content-Type' => $thumbail->getMimeType(),
+							'contents' => fopen($thumbail->getPathname(), 'r')
+						],
+						[
+							'name' => 'fileFormat',
+							'contents' => $request->fileFormat
+						],
+						[
+							'name' => 'CategoryId',
+							'contents' => $request->CategoryId
+						],
+						[
+							'name' => 'UserId',
+							'contents' => $request->session()->get('UserId')
+						],
+					]
+				]);
+				if ($response->getStatusCode() == 200) {
+					return redirect()->route('services.index')->with('status', 'Service updated auccessfully! :)');
+				} else {
+					return back()->withInput();
+				}
+			} catch (\GuzzleHttp\Exception\BadResponseException $e) {
+				return $e->getResponse()->getBody()->getContents();
+			}
+		} else {
+			try {
+				$response = $guzzle->request('PATCH', $devHost . "services", [
+					'headers' => $headers,
+					'multipart' => [
+						[
+							'name' => 'title',
+							'contents' => $request->title
+						],
+						[
+							'name' => 'description',
+							'contents' => $request->description
+						],
+						[
+							'name' => 'fileFormat',
+							'contents' => $request->fileFormat
+						],
+						[
+							'name' => 'CategoryId',
+							'contents' => $request->CategoryId
+						],
+						[
+							'name' => 'UserId',
+							'contents' => $request->session()->get('UserId')
+						],
+					]
+				]);
+				if ($response->getStatusCode() == 200) {
+					return redirect()->route('services.index')->with('status', 'Service updated auccessfully! :)');
+				} else {
+					return back()->withInput();
+				}
+			} catch (\GuzzleHttp\Exception\BadResponseException $e) {
+				return $e->getResponse()->getBody()->getContents();
+			}
+		}
+
     }
 
     /**
@@ -111,8 +261,22 @@ class ServicesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $devHost = env("HOST_API_DEV", "");
+
+        $response = Http::withHeaders([
+			'x-access-token' => $request->session()->get('accessToken')
+		])->delete($devHost . 'services/' . $id);
+
+
+        if ($response->successful()){
+            return redirect()->route('services.index')->with('status', 'Service deleted successfully! :)');
+        }
+    }
+
+	public function message($id)
+    {
+        return redirect('seller')->with('ToUserId', $id);
     }
 }

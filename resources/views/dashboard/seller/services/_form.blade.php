@@ -8,29 +8,23 @@
 </div>
 
 <div class="form-group">
-    <label>Description</label>
-    <textarea class="form-control" required="">{{ old('description') ?? $service->description }}</textarea>
-	<div class="invalid-feedback">Please fill in your description</div>
+    <label class="col-form-label">
+		Description
+	</label>
+    <textarea name="description" class="summernote">{{ old('description') ?? $service->description }}</textarea>
 </div>
 
 <div class="form-group">
-    <label>Thumbnail</label>
-    <div class="custom-file">
-        <input type="file" class="custom-file-input" id="customFile" accept="image/png, image/jpeg" required>
-        <label class="custom-file-label" for="customFile">Choose file</label>
-		<div class="invalid-feedback">Please fill in your thumbnail</div>
-    </div>
+	<label>Thumbnail</label>
+	<input name="thumbnail" type="file" class="form-control" required>
+	<div class="invalid-feedback">Please fill in your thumbnail</div>
 </div>
 
 <div class="form-group">
     <label>Category</label>
-    <select class="form-control selectric">
-        <option>Option 1</option>
-        <option>Option 2</option>
-        <option>Option 3</option>
-        <option>Option 4</option>
-        <option>Option 5</option>
-        <option>Option 6</option>
+    <select name="CategoryId" class="form-control selectric">
+        <option value="1" {{$service->CategoryId == '1' ? 'selected' : ''}}>Logo Design</option>
+        <option value="2"{{$service->CategoryId == '2' ? 'selected' : ''}}>Sketch Vector</option>
     </select>
 </div>
 

@@ -12,20 +12,18 @@
     </div>
 
     <div class="section-body">
-        <h2 class="section-title">Add New Service</h2>
+        <h2 class="section-title">Edit Service</h2>
         <p class="section-lead">
-			Create your new service here.
+			Edit your service here.
 		</p>
 
         <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="card">
-                    {{-- <div class="card-header">
-                        <h4>Input Text</h4>
-                    </div> --}}
                     <div class="card-body">
-                        <form action="{{route('services.store')}}" method="POST" class="needs-validation" novalidate="" enctype="multipart/form-data">
+                        <form action="{{route('services.update', $service->id)}}" method="POST" class="needs-validation" novalidate="" enctype="multipart/form-data">
 							@csrf
+							@method('patch')
                             @include('dashboard.seller.services._form')
                         </form>
                     </div>
