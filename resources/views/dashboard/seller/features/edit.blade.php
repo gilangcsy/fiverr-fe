@@ -11,17 +11,18 @@
     </div>
 
     <div class="section-body">
-        <h2 class="section-title">Add New Features</h2>
+        <h2 class="section-title">Edit Feature</h2>
         <p class="section-lead">
-			Create your new features here.
+			Edit your feature here.
 		</p>
 
         <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <form action="/seller/services/features/{{$feature->ServiceId}}/" method="POST" class="needs-validation" novalidate="" enctype="multipart/form-data">
+                        <form action="/seller/services/features/{{$ServiceId}}/update/{{$feature->id}}" method="POST" class="needs-validation" novalidate="" enctype="multipart/form-data">
 							@csrf
+							@method('patch')
                             @include('dashboard.seller.features._form')
                         </form>
                     </div>
@@ -35,7 +36,6 @@
 @section('js')
 	<script src="{{asset('assets/modules/summernote/summernote-bs4.js')}}"></script>
 @endsection
-
 
 @push('active.services')
 	active

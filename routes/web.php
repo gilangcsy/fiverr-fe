@@ -52,9 +52,12 @@ Route::prefix('seller/')
 					->namespace('Features')
 					->middleware('seller')
 					->group(function () {
-						Route::get('/{id}', [ServiceFeatureController::class, 'index'])->name('features.index');
-						Route::get('/{id}/create', [ServiceFeatureController::class, 'create'])->name('features.create');
-						Route::post('/', [ServiceFeatureController::class, 'store'])->name('features.store');
+						Route::get('/{ServiceId}', [ServiceFeatureController::class, 'index'])->name('features.index');
+						Route::delete('/delete/{FeatureId}', [ServiceFeatureController::class, 'destroy'])->name('features.delete');
+						Route::patch('/{ServiceId}/update/{FeatureId}', [ServiceFeatureController::class, 'update'])->name('features.update');
+						Route::post('/{ServiceId}', [ServiceFeatureController::class, 'store'])->name('features.store');
+						Route::get('/{ServiceId}/create', [ServiceFeatureController::class, 'create'])->name('features.create');
+						Route::get('/{ServiceId}/edit/{FeatureId}', [ServiceFeatureController::class, 'edit'])->name('features.edit');
 				});
         });
     });

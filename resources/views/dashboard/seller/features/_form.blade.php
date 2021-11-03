@@ -1,4 +1,4 @@
-<input type="hidden" name="id" value="{{ old('id') ?? $service->id }}"
+<input type="hidden" name="id" value="{{ old('id') ?? $feature->id }}"
     class="form-control w-25 @error('position') is-invalid @enderror">
 
 <div class="form-group">
@@ -6,7 +6,7 @@
 		Features Description
 	</label>
     <div class="col-12s">
-        <textarea name="title" class="summernote"></textarea>
+        <textarea name="title" class="summernote">{{$feature->title}}</textarea>
     </div>
 </div>
 
@@ -16,8 +16,6 @@
         <option value="_svp8sydhfk3">Basic</option>
     </select>
 </div>
-
-<input type="hidden" name="ServiceId" value="{{$service->ServiceId}}">
 
 <button type="submit" class="btn btn-primary">
     Save

@@ -15,15 +15,7 @@
 @endsection
 
 @section('content')
-{{-- <input type="hidden" id="status" value="{{Session::get('status')}}">
-<input type="hidden" id="UserId" value="{{Session::get('UserId')}}"> --}}
-@if (session('ToUserId'))
-    <input type="hidden" id="ToUserIdNew" value="{{ session('ToUserId') }}">
-@else
-	<input type="hidden" id="ToUserIdNew" value="0">
-@endif
-{{-- <input type="text" id="ToUserId" value="0">
-<input type="text" id="groupId" value="0"> --}}
+<input type="hidden" id="status" value="{{Session::get('status')}}">
 
 <section class="section">
     <div class="section-header">
@@ -58,6 +50,7 @@
                                         <th class="text-center">
                                             #
                                         </th>
+										<th>Title</th>
                                         <th>Description</th>
                                         <th>Action</th>
                                     </tr>
@@ -66,12 +59,24 @@
                                     @foreach ($features as $item)
                                     <tr>
                                         <td>
-                                            1
+                                            {{$loop->iteration}}
                                         </td>
+										<td>
+											<span class="badge badge-light">{{$item->ServicePlan->title}}</span>
+										</td>
                                         <td>{!!$item->title!!}</td>
-                                        <td>
-											<a href="#" class="btn btn-primary">
-												Features
+										<td>
+											<form action="{{route('features.delete', $item->id)}}" method="POST">
+												@method('delete')
+												@csrf
+												<button class="btn btn-danger mt-2" onclick="return confirm('Are you sure?')">
+													<i class="fa fa-trash"></i>
+												</button>
+											</form>
+
+
+											<a href="{{$ServiceId}}/edit/{{$item->id}}" class="btn btn-warning mt-2">
+												<i class="fa fa-pen-square"></i>
 											</a>
 										</td>
                                     </tr>
@@ -99,8 +104,8 @@
 <script>
     let status = document.getElementById("status").value;
     iziToast.success({
-        title: `${status}. `,
-        message: 'You are logged as a Seller! :)',
+        title: `Oh yeah!`,
+        message: `${status}`,
         position: 'topRight'
     });
 

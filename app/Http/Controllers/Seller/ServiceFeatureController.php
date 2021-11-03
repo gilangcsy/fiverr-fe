@@ -16,20 +16,21 @@ class ServiceFeatureController extends Controller
      */
     public function index($id)
     {
+
+		$ServiceId = $id;
+
 		$devHost = env("HOST_API_DEV", "");
 
 		$response = Http::get($devHost . 'services/plans/features', [
-			'ServiceId' => $id
+			'ServiceId' => $ServiceId
 		]);
 
 		$features = json_decode($response->body());
 		$features = $features->data;
-		$ServiceId = $id;
 
 		if ($response->successful()){
 			return view('dashboard/seller/features/index', compact(['features', 'ServiceId']));
 		}
-		return redirect()->route('auth.index')->with('status', $features->message);
     }
 
     /**
@@ -39,13 +40,13 @@ class ServiceFeatureController extends Controller
      */
     public function create($id)
     {
-        $service = (object) [
+        $feature = (object) [
 			'id' => '',
 			'title' => '',
 			'ServiceId' => $id,
 		];
 		
-		return view('dashboard/seller/features/create', compact('service'));
+		return view('dashboard/seller/features/create', compact('feature'));
         
     }
 
@@ -90,9 +91,27 @@ class ServiceFeatureController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $ServiceId ,$id)
     {
-        //
+        $devHost = env("HOST_API_DEV", "");
+        $response = Http::withHeaders([
+            'x-access-token' => $request->session()->get('accessToken')
+        ])->get($devHost . 'services/plans/features', [
+			'id' => $id
+		]);
+        $features = json_decode($response->body());
+
+		foreach($features->data as $item) {
+			$feature = (object) [
+				'id' => $item->id,
+				'title' => $item->title,
+				'ServicePlanId' => $item->ServicePlanId
+			];
+		}
+
+        if ($response->successful()){
+            return view('dashboard/seller/features/edit', compact(['feature', 'ServiceId']));
+        }
     }
 
     /**
@@ -102,9 +121,22 @@ class ServiceFeatureController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $ServicePlanId)
     {
-        //
+    	$devHost = env("HOST_API_DEV", "");
+        $response = Http::withHeaders([
+            'x-access-token' => $request->session()->get('accessToken')
+        ])->patch($devHost . 'services/plans/features/' . $ServicePlanId, [
+			'title' => $request->title,
+			'ServicePlanId' => $request->ServicePlanId
+		]);
+        $features = json_decode($response->body());
+
+		if ($response->successful()){
+			return redirect()->route('features.index', $id)->with('status', 'Features Updated Successfully');
+		} else {
+			return back()->withInput();
+		}
     }
 
     /**
@@ -113,8 +145,19 @@ class ServiceFeatureController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $devHost = env("HOST_API_DEV", "");
+
+        $response = Http::withHeaders([
+			'x-access-token' => $request->session()->get('accessToken')
+		])->delete($devHost . 'services/plans/features/' . $id);
+
+
+        if ($response->successful()){
+            return redirect()->route('feature.index')->with('status', 'Feature deleted successfully! :)');
+        } else {
+			return back()->with('status', $response->message);
+		}
     }
 }
