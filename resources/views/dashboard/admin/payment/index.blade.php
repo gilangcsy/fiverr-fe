@@ -3,15 +3,6 @@
 @section('css')
 <!-- CSS Libraries -->
 <link rel="stylesheet" href="{{asset('assets/modules/izitoast/css/iziToast.min.css')}}">
-
-<style>
-	li.media {
-		padding:10px;
-	}
-	.media:hover {
-		background: rgb(241, 241, 241);
-	}
-</style>
 @endsection
 
 @section('content')
@@ -19,68 +10,63 @@
 
 <section class="section">
     <div class="section-header">
-        <h1>Add New Features</h1>
-		@if (session('ToUserId'))
-    		<div class="alert alert-success">
-        		{{ session('ToUserId') }}
-   			</div>
-		@endif
+        <h1>Payment Check</h1>
     </div>
 
     <div class="section-body">
-
         <div class="card">
             <div class="card-header">
-                <a href="{{route('features.create', $ServiceId)}}" class="btn btn-primary">
-                    Add New Features
-                </a>
-			</div>
-			<div class="card-body">
-				<div class="table-responsive">
+            </div>
+            
+                    <div class="card-body">
+                        <div class="table-responsive">
                             <table class="table table-striped" id="table-1">
                                 <thead>
                                     <tr>
                                         <th class="text-center">
                                             #
                                         </th>
-										<th>Title</th>
-                                        <th>Description</th>
-										<th>Price</th>
-                                        <th>Action</th>
+                                        <th>Order ID</th>
+										<th>Transaction ID</th>
+                                        <th>User ID</th>
+                                        <th>Service ID</th>
+										<th>Gross Amount</th>
+										<th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($features as $item)
+                                    @foreach ($transaction as $item)
                                     <tr>
                                         <td>
                                             {{$loop->iteration}}
                                         </td>
+                                        <td>{{$item->id}}</td>
+                                        <td>{{ $item->transactionId }}</td>
+										<td>{{ $item->UserId }}</td>
+										<td>{{$item->ServicePlanFeatureId}}</td>
+										<td>{{$item->quantity * $item->price}}</td>
 										<td>
-											<span class="badge badge-light">{{$item->ServicePlan->title}}</span>
-										</td>
-                                        <td>{!!$item->title!!}</td>
-										<td>{{$item->price}}</td>
-										<td>
-											<form action="{{route('features.delete', $item->id)}}" method="POST">
-												@method('delete')
+											@if ($item->status == 'pending')
+											<form action="{{route('payment.update', $item->id)}}" method="POST">
 												@csrf
-												<button class="btn btn-danger mt-2" onclick="return confirm('Are you sure?')">
-													<i class="fa fa-trash"></i>
+												@method('patch')
+												<button class="btn btn-warning">
+													{{ucfirst(trans($item->status))}}
 												</button>
 											</form>
-
-
-											<a href="{{$ServiceId}}/edit/{{$item->id}}" class="btn btn-warning mt-2">
-												<i class="fa fa-pen-square"></i>
-											</a>
+											@else
+												<span class="badge badge-success">
+													{{$item->status}}
+												</span>
+											@endif
 										</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
-			</div>
-		</div>
+                    </div>
+        </div>
     </div>
 </section>
 @endsection
@@ -95,26 +81,15 @@
 <script>
     let status = document.getElementById("status").value;
     iziToast.success({
-        title: `Oh yeah!`,
-        message: `${status}`,
+        title: `${status}. `,
+        message: 'You are logged as an Admin! :)',
         position: 'topRight'
     });
-
 </script>
 
-@endif
-
-@if (session('ToUserId'))
-
-<script>
-	let ToUserIdNew = document.getElementById("ToUserIdNew").value;
-	let mychatbox2 = document.getElementById("mychatbox2");
-	
-	mychatbox2.style = "block";
-</script>
 @endif
 @endsection
 
-@push('active.services')
+@push('active.payments')
 	active
 @endpush

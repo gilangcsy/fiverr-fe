@@ -48,7 +48,14 @@ class AuthController extends Controller
             $request->session()->put('roleCheck', $getData->credentials->role);
             $request->session()->put('UserId', $getData->credentials->UserId);
             $request->session()->put('fullName', $getData->credentials->fullName);
-            return redirect()->route('index')->with('status', 'Welcome, ' . $getData->credentials->fullName);
+			
+			if($getData->credentials->role == 1 ) {
+				return redirect()->route('admin.dashboard')->with('status', 'Welcome, ' . $getData->credentials->fullName);
+			} else if($getData->credentials->role == 2 ) {
+				return redirect()->route('index')->with('status', 'Welcome, ' . $getData->credentials->fullName);
+			} else if($getData->credentials->role == 3 ) {
+				return redirect()->route('home.index')->with('status', 'Welcome, ' . $getData->credentials->fullName);
+			}
         }
         return redirect()->route('auth.index')->with('status', $getData->message);
     }

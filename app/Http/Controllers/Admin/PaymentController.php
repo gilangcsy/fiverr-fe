@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
-class DashboardController extends Controller
+class PaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,13 +15,17 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-		// $role = request()->session()->get('roleCheck');
-		// if($role == 1 ) {
-		// 	return redirect()->route('admin.dashboard');
-		// } else if($role == 3) {
-		// 	return redirect()->route('home.index');
-		// }
-        return view('dashboard/seller/index');
+		$devHost = env("HOST_API_DEV", "");
+        $UserId = $request->session()->get('UserId');
+
+		$response = Http::get($devHost . 'purchasing');
+		
+        $transaction = json_decode($response->body());
+		$transaction = $transaction->data;
+		
+        if ($response->successful()){
+            return view('dashboard/admin/payment/index', compact('transaction'));
+        }
     }
 
     /**
@@ -75,7 +80,16 @@ class DashboardController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $devHost = env("HOST_API_DEV", "");
+        $response = Http::patch($devHost . 'purchasing/' . $id, [
+			'status' => 'Paid',
+		]);
+
+		if ($response->successful()){
+			return redirect()->route('payment.index')->with('status', 'Payment Updated Successfully');
+		} else {
+			return back();
+		}
     }
 
     /**

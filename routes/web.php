@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\General\HomeController;
+use App\Http\Controllers\General\TransactionController;
 use App\Http\Controllers\Seller\DashboardController;
+use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ServiceFeatureController;
 use App\Http\Controllers\Seller\ServicesController;
 use Illuminate\Support\Facades\Route;
@@ -17,9 +22,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('dashboard/seller/index');
-})->middleware('seller');
+// Route::get('/', function () {
+//     return view('dashboard/seller/index');
+// })->middleware('seller');
+
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get('/explore', [HomeController::class, 'explore'])->name('home.explore');
+Route::get('detail/{id}', [HomeController::class, 'show'])->name('home.show');
+Route::get('checkout/{id}', [HomeController::class, 'create'])->name('home.create');
+Route::post('payment', [HomeController::class, 'store'])->name('home.store');
+
+Route::prefix('mytransaction/')
+    ->namespace('My Transaction')
+    ->group(function () {
+        Route::get('', [TransactionController::class, 'index'])->name('transaction.index');
+    });
 
 Route::prefix('auth/')
     ->namespace('Auth')
@@ -29,7 +46,20 @@ Route::prefix('auth/')
 
         Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.logout');
     });
+	
 
+	
+Route::prefix('admin/')
+	->namespace('Admin')
+	->group(function () {
+		Route::get('', [AdminController::class, 'index'])->name('admin.dashboard');
+		Route::prefix('payment/')
+			->namespace('Payment')
+			->group(function () {
+				Route::get('', [PaymentController::class, 'index'])->name('payment.index');
+				Route::patch('{id}', [PaymentController::class, 'update'])->name('payment.update');
+		});
+});
 
 Route::prefix('seller/')
     ->namespace('Seller')
@@ -59,5 +89,17 @@ Route::prefix('seller/')
 						Route::get('/{ServiceId}/create', [ServiceFeatureController::class, 'create'])->name('features.create');
 						Route::get('/{ServiceId}/edit/{FeatureId}', [ServiceFeatureController::class, 'edit'])->name('features.edit');
 				});
+        });
+
+		Route::prefix('orders/')
+            ->namespace('Orders')
+            ->middleware('seller')
+            ->group(function () {
+            	Route::get('', [OrderController::class, 'index'])->name('orders.index');
+            	Route::get('/create', [OrderController::class, 'create'])->name('orders.create');
+            	Route::get('/edit/{id}', [OrderController::class, 'edit'])->name('orders.edit');
+            	Route::post('/', [OrderController::class, 'store'])->name('orders.store');
+            	Route::delete('/{id}', [OrderController::class, 'destroy'])->name('orders.delete');
+            	Route::patch('/{id}', [OrderController::class, 'update'])->name('orders.update');
         });
     });

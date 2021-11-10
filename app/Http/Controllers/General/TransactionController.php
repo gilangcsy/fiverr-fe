@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Http\Controllers\General;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
-class DashboardController extends Controller
+class TransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,13 +15,19 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-		// $role = request()->session()->get('roleCheck');
-		// if($role == 1 ) {
-		// 	return redirect()->route('admin.dashboard');
-		// } else if($role == 3) {
-		// 	return redirect()->route('home.index');
-		// }
-        return view('dashboard/seller/index');
+        $devHost = env("HOST_API_DEV", "");
+        $UserId = $request->session()->get('UserId');
+
+		$response = Http::get($devHost . 'purchasing', [
+			'UserId' => $UserId
+		]);
+		
+        $transaction = json_decode($response->body());
+		$transaction = $transaction->data;
+		
+        if ($response->successful()){
+            return view('public/transaction', compact(['transaction']));
+        }
     }
 
     /**

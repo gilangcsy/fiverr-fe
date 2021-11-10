@@ -16,16 +16,12 @@ class SellerCheck
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! session()->has('accessToken')) {
-            if (! session()->has('roleCheck')) {
-                if($request->session()->get('roleCheck') != 1) {
-                    return redirect()->route('auth.index');
-                }
-                return redirect()->route('auth.index');
-            }
-        return redirect()->route('auth.index');
+		if (session()->has('accessToken')) {
+			if($request->session()->get('roleCheck') != 2) {
+				return redirect()->back();
+			}
+			return $next($request);
         }
-        return $next($request);
-
+		return redirect()->route('auth.index');
     }
 }

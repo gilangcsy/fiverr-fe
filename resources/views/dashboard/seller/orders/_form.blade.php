@@ -16,7 +16,7 @@
 
 <div class="form-group">
 	<label>Thumbnail</label>
-	<input name="thumbnail" type="file" class="form-control" {{$service->id != null ? '' : 'required'}}>
+	<input name="thumbnail" type="file" class="form-control" required>
 	<div class="invalid-feedback">Please fill in your thumbnail</div>
 </div>
 

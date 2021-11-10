@@ -13,8 +13,14 @@
 <div class="form-group">
     <label>Features Plan</label>
     <select name="ServicePlanId" class="form-control selectric">
-        <option value="_svp8sydhfk3">Basic</option>
+        <option value="1">Basic</option>
     </select>
+</div>
+
+<div class="form-group">
+    <label>Price</label>
+    <input type="number" name="price" value="{{ old('price') ?? $feature->price }}" class="form-control" required autofocus autocomplete="off">
+	<div class="invalid-feedback">Please fill in your price</div>
 </div>
 
 <button type="submit" class="btn btn-primary">

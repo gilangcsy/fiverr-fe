@@ -43,6 +43,7 @@ class ServiceFeatureController extends Controller
         $feature = (object) [
 			'id' => '',
 			'title' => '',
+			'price' => '',
 			'ServiceId' => $id,
 		];
 		
@@ -62,13 +63,16 @@ class ServiceFeatureController extends Controller
         $response = Http::post($devHost . 'services/plans/features', [
         	'title' => $request->title,
         	'ServicePlanId' => $request->ServicePlanId,
+        	'price' => $request->price,
         	'ServiceId' => $request->ServiceId,
         ]);
+
+		$features = json_decode($response);
 
 		if ($response->successful()){
 			return redirect()->route('features.index', $request->ServiceId)->with('status', 'Features Added Successfully');
 		} else {
-			return back()->withInput();
+			return $features->message;
 		}
 
 
@@ -105,6 +109,7 @@ class ServiceFeatureController extends Controller
 			$feature = (object) [
 				'id' => $item->id,
 				'title' => $item->title,
+				'price' => $item->price,
 				'ServicePlanId' => $item->ServicePlanId
 			];
 		}
@@ -128,9 +133,9 @@ class ServiceFeatureController extends Controller
             'x-access-token' => $request->session()->get('accessToken')
         ])->patch($devHost . 'services/plans/features/' . $ServicePlanId, [
 			'title' => $request->title,
-			'ServicePlanId' => $request->ServicePlanId
+			'ServicePlanId' => $request->ServicePlanId,
+			'price' => $request->price
 		]);
-        $features = json_decode($response->body());
 
 		if ($response->successful()){
 			return redirect()->route('features.index', $id)->with('status', 'Features Updated Successfully');
@@ -155,7 +160,7 @@ class ServiceFeatureController extends Controller
 
 
         if ($response->successful()){
-            return redirect()->route('feature.index')->with('status', 'Feature deleted successfully! :)');
+            return back()->with('status', 'Feature deleted successfully! :)');
         } else {
 			return back()->with('status', $response->message);
 		}

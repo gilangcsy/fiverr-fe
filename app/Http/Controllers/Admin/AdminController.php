@@ -1,26 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-		// $role = request()->session()->get('roleCheck');
-		// if($role == 1 ) {
-		// 	return redirect()->route('admin.dashboard');
-		// } else if($role == 3) {
-		// 	return redirect()->route('home.index');
-		// }
-        return view('dashboard/seller/index');
+        return view('dashboard/admin/index');
     }
 
     /**

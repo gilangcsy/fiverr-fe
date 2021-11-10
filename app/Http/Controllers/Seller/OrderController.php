@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
-class DashboardController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,13 +15,24 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-		// $role = request()->session()->get('roleCheck');
-		// if($role == 1 ) {
-		// 	return redirect()->route('admin.dashboard');
-		// } else if($role == 3) {
-		// 	return redirect()->route('home.index');
-		// }
-        return view('dashboard/seller/index');
+
+        $devHost = env("HOST_API_DEV", "");
+        $devHostStorage = env("HOST_STORAGE_DEV", "");
+        $UserId = $request->session()->get('UserId');
+
+		$response = Http::get($devHost . 'purchasing');
+        $purchasingDecode = json_decode($response->body());
+		$orders = $purchasingDecode->data;
+
+		$responseServicePlan = Http::get($devHost . 'services/plans/features');
+		$responseServicePlan = json_decode($responseServicePlan->body());
+		$features = $responseServicePlan->data;
+		
+        if ($response->successful()){
+            return view('dashboard/seller/orders/index', compact(['orders', 'features' ,'devHostStorage', 'UserId']));
+        } else {
+			return $purchasingDecode->message;
+		}
     }
 
     /**
@@ -41,7 +53,8 @@ class DashboardController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $result = json_decode($request->result_data);
+		dd($result);
     }
 
     /**

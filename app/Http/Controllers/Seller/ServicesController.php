@@ -218,7 +218,7 @@ class ServicesController extends Controller
 			}
 		} else {
 			try {
-				$response = $guzzle->request('PATCH', $devHost . "services", [
+				$response = $guzzle->request('PATCH',$devHost . "services/" . $id, [
 					'headers' => $headers,
 					'multipart' => [
 						[
