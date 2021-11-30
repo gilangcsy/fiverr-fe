@@ -24,7 +24,7 @@ class AuthController extends Controller
      */
     public function create()
     {
-        //
+        return view('auth/register');
     }
 
     /**
@@ -51,10 +51,10 @@ class AuthController extends Controller
 			
 			if($getData->credentials->role == 1 ) {
 				return redirect()->route('admin.dashboard')->with('status', 'Welcome, ' . $getData->credentials->fullName);
-			} else if($getData->credentials->role == 2 ) {
-				return redirect()->route('index')->with('status', 'Welcome, ' . $getData->credentials->fullName);
 			} else if($getData->credentials->role == 3 ) {
 				return redirect()->route('home.index')->with('status', 'Welcome, ' . $getData->credentials->fullName);
+			} else if($getData->credentials->role == 2 ) {
+				return redirect()->route('index')->with('status', 'Welcome, ' . $getData->credentials->fullName);
 			}
         }
         return redirect()->route('auth.index')->with('status', $getData->message);
@@ -118,5 +118,29 @@ class AuthController extends Controller
         } else {
         	return redirect()->route('auth.index');
 		}
+    }
+
+    public function make(Request $request)
+    {
+        if($request->password != $request->passwordConfirm) {
+            return back()->withInput()->withStatus('Password tidak sama!');
+        } else {
+            $devHost = env("HOST_API_DEV", "");
+            $response = Http::post($devHost . 'users', [
+        	    'fullName' => $request->fullName,
+        	    'username' => $request->username,
+        	    'email' => $request->email,
+        	    'password' => $request->password,
+        	    'RoleId' => $request->RoleId,
+            ]);
+
+		    $user = json_decode($response);
+
+		    if ($response->successful()){
+			    return redirect()->route('auth.index')->with('status', 'Register Has Been Successfully!');
+		    } else {
+			return $user->message;
+		    }
+        }
     }
 }

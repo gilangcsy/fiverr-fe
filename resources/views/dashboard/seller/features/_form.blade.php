@@ -14,6 +14,7 @@
     <label>Features Plan</label>
     <select name="ServicePlanId" class="form-control selectric">
         <option value="1">Basic</option>
+        <option value="2">Standard</option>
     </select>
 </div>
 

@@ -23,7 +23,7 @@
                 </form>
             </div>
             <div class="card-body">
-                Develpment Token : {{Session::get('accessToken')}}
+                
             </div>
         </div>
     </div>

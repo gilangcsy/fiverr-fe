@@ -22,7 +22,12 @@
 			@yield('content')
 		</section>
 	</main>
-	<footer>
-	</footer>
+    <footer>
+        <h2>Hekaton</h2>
+        <br>
+        <p>Copyright &copy; Kelompok 6 PSI 2021</p>
+    </footer>
+
+    @yield('js')
 
 </html>

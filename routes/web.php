@@ -22,9 +22,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('dashboard/seller/index');
-// })->middleware('seller');
+Route::get('/test', function () {
+    return 'hola!';
+});
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/explore', [HomeController::class, 'explore'])->name('home.explore');
@@ -42,7 +42,9 @@ Route::prefix('auth/')
     ->namespace('Auth')
     ->group(function () {
         Route::get('', [AuthController::class, 'index'])->name('auth.index');
+        Route::get('create', [AuthController::class, 'create'])->name('auth.create');
         Route::post('', [AuthController::class, 'store'])->name('auth.login');
+        Route::post('create', [AuthController::class, 'make'])->name('auth.store');
 
         Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.logout');
     });
@@ -89,7 +91,7 @@ Route::prefix('seller/')
 						Route::get('/{ServiceId}/create', [ServiceFeatureController::class, 'create'])->name('features.create');
 						Route::get('/{ServiceId}/edit/{FeatureId}', [ServiceFeatureController::class, 'edit'])->name('features.edit');
 				});
-        });
+        	});
 
 		Route::prefix('orders/')
             ->namespace('Orders')
@@ -101,5 +103,5 @@ Route::prefix('seller/')
             	Route::post('/', [OrderController::class, 'store'])->name('orders.store');
             	Route::delete('/{id}', [OrderController::class, 'destroy'])->name('orders.delete');
             	Route::patch('/{id}', [OrderController::class, 'update'])->name('orders.update');
-        });
     });
+});

@@ -106,7 +106,7 @@ class HomeController extends Controller
 		
         $service = json_decode($response->body());
 		$service = $service->data;
-		
+        
         if ($response->successful()){
             return view('public/detail', compact(['service', 'devHostStorage']));
         }

@@ -4,8 +4,12 @@
         background-color: #fff;
         width: 300px;
         position: absolute;
+
+        /* This trasform moves the drawer off canvas. */
         -webkit-transform: translate(-300px, 0);
         transform: translate(-300px, 0);
+
+        /* Optionally, we animate the drawer. */
         transition: transform 0.3s ease;
     }
 
@@ -25,8 +29,8 @@
 @media screen and (min-width: 455px) {
     /* .headline__content {
         padding: 16px 16px;
-    }
-    .hero_tagline {
+    } */
+    /* .hero_tagline {
         max-width: 100px;
     } */
     .headline__title {
@@ -48,7 +52,7 @@
     .headline {
         width: 100%;
     }
-    .headline__content, .offer {
+    .headline__content, .offer, .solusi{
         margin: 0 auto;
         max-width: 650px;
     }

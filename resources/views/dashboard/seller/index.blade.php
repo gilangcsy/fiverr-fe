@@ -35,16 +35,15 @@
 
         <div class="card">
             <div class="card-header">
-                <h4>Disabled &amp; Active State</h4>
+                <!-- <h4>Disabled &amp; Active State</h4>
 
                 <form id="payment-form" method="post" action="{{route('orders.store')}}">
                     @csrf
                     <input type="hidden" name="result_type" id="result-type" value=""></div>
                     <input type="hidden" name="result_data" id="result-data" value=""></div>
-                </form>
+                </form> -->
             </div>
             <div class="card-body">
-                Develpment Token : {{Session::get('accessToken')}}
                 {{-- <nav aria-label="...">
                     <ul class="pagination">
                         <li class="page-item disabled">

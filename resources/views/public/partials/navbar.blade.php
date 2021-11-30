@@ -5,14 +5,18 @@
 			<a id="menu" class="header__menu">☰</a>
 			<nav id="drawer" class="nav">
 				<ul class="nav__list">
-					<li class="nav__item"><a href="#">Beranda</a></li>
+					<li class="nav__item"><a href="{{route('home.index')}}">Beranda</a></li>
 					<li class="nav__item"><a href="{{route('home.explore')}}">Eksplorasi</a></li>
 					<li class="nav__item"><a href="#">Kategori</a></li>
 				</ul>
 			</nav>
 			@if (! Session::has('accessToken'))
-				<button class="header_button a">Masuk</button>
-				<button class="header_button b">Daftar</button>
+			<form action="{{ route('auth.index') }}">
+				<button type="submit" class="header_button a">Masuk</button>
+			</form>
+			<form action="{{ route('auth.create') }}">
+				<button type="submit" class="header_button b">Daftar</button>
+			</form>
 			@else
 				<form method="POST" action="{{ route('auth.logout') }}">
                     @csrf
